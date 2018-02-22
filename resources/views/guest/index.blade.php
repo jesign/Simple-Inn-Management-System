@@ -40,7 +40,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="guest in guests" :class="{danger : isTimeout(guest.checkout_time_24)}">   
+                                <tr v-for="guest in guests" :class="{warning : isTimeout(guest.check_out), danger : isCheckout(guest.status)}">   
                                     <td><a :href="'guests/' + guest.id">@{{ guest.room_number }}</a></td>
                                     <td>@{{ guest.room_type.name }}</td>
                                     <td>@{{ guest.name }}</td>
@@ -52,6 +52,7 @@
                                         {{-- <form action="'guests/' + guest.id + '/delete'" method="POST" class="inline">
                                             <button type="submit" href="guests/@{{guest.id}}" class="btn inline btn-danger btn-sm">Delete</button>
                                         </form> --}}
+                                        <a href="#" class="btn btn inline btn-danger btn-sm" @click="checkout(guest.id)">Checkout</a>
                                     </td>
                                 </tr>
                             </tbody>

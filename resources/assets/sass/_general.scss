@@ -4,10 +4,16 @@
 .inline{
 	display: inline;
 }
+.pointer{
+	cursor: pointer;
+}
 .inline-important{
 	display: inline !important;
 	vertical-align: middle;
 }
 .form-control.short-date-field{
 	width: 200px;
+}
+.center-text {
+	text-align: center;
 }

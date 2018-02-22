@@ -1,17 +1,13 @@
 <script>
     import Resource from '../helpers/resource';
+    import Modal from '../services/modal';
+    import AlertModal from '../modal/alert.vue';
 
     export default {
     	data(){
     		return {
                 date: null,
                 guests: []
-            }
-    	},
-    	// props: ['checkOutTime'], 
-    	computed: {
-    		'isTimeOut': function(){
-                return false;
             }
     	},
         methods:  {
@@ -40,22 +36,58 @@
 
                 };
                 Resource.send(requirements).then((response) => {
-                    this.guests = response.guests;
-                    console.log(response);
-                    this.date = response.dateChosen;
-                });     
+                    if(response.success){
+                        this.guests = response.guests;
+                        this.date = response.dateChosen;    
+                    }
+                });
             },
-            isTimeout(checkout){
-                var minute = 1000 * 60;  
-                var hour = minute * 60;  
-                var day = hour * 24;  
 
-                let date = new Date;
-                let currentTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-                console.log(checkout, currentTime);
-                return checkout < currentTime;
+            isTimeout(checkout){
+
+                let dateNow = new Date();
+                let checkoutDate = new Date(checkout);
+                
+                return checkoutDate < dateNow;
                 // return false;
+            },
+
+            isCheckout(status) {
+                return status == 'Check Out';
+            },
+
+            checkout(guestId){
+                let requirements = {
+
+                    url: `/api/guest/checkout/` + guestId,
+                    method: 'POST',
+                    params: {
+                    }
+
+                };
+                Resource.send(requirements).then((response) => {
+                    if(response.success){
+                        let body = 'Room ' + response.guest.room_number + ' has checked out.';
+                        this.getGuests();    
+                        this.openModal('Success:', body)
+                    } else {
+                        this.openModal('Error!', response.error.body);
+                    }
+                });
+            },
+
+            openModal (title, message) {
+                let config = {
+                    modal: AlertModal,
+                    data: {
+                        title: title, 
+                        body: message,
+                    }
+                }
+
+                Modal.openModal(config);
             }
+
         },
         mounted() {
             

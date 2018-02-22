@@ -10,27 +10,18 @@ use Illuminate\Database\Eloquent\Model;
 class Guest extends Model
 {
 	protected $dates = ['check_in', 'check_out'];
-    protected $appends = ['checkout_time', 'checkin_time', 'checkout_time_24', 'checkin_time_24'];
+    protected $appends = ['checkout_time', 'checkin_time'];
     /* Attributes */
     public function getCheckinTimeAttribute()
     {   
-        return isset($this->check_in) ? $this->check_in->format('g:i a') : '';
+        return isset($this->check_in) ? $this->check_in->format('M d, h:i A') : '';
     }
 
     public function getCheckoutTimeAttribute()
     {
-        return isset($this->check_out) ? $this->check_out->format('g:i a') : '';
+        return isset($this->check_out) ? $this->check_out->format('M d, h:i A') : '';
     }
 
-    public function getCheckinTime24Attribute()
-    {   
-        return isset($this->check_in) ? $this->check_in->format('g:i:s') : '';
-    }
-
-    public function getCheckoutTime24Attribute()
-    {
-        return isset($this->check_out) ? $this->check_out->format('g:i:s') : '';
-    }
 
     /* Relationships*/
     public function roomType()

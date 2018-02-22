@@ -40,6 +40,7 @@ class GuestController extends Controller
     	$guest->status = 'Check In';
     	$guest->save();
 
+        $guest->updateTotalBill();
     	return back();
     }
 
@@ -103,22 +104,8 @@ class GuestController extends Controller
 		}
 		$guest->check_out = Carbon::now();
 		$guest->status = 'Check Out';
-		session()->flash('message', 'Room ' . $guest->room_number . ' has checked out.');
+		
 		$guest->save();
 		return back();
 	}
-
-    public function getGuests(){
-
-        if(!request()->date){
-            $dateChosen = Carbon::now()->format('Y-m-d');   
-        }else {
-            $dateChosen = request()->date;
-        }
-
-        $guests = Guest::with('roomType')->whereDate('created_at', '=', $dateChosen)->get();
-
-        
-        return response()->json(compact('guests' ,'dateChosen'));
-    }
 }

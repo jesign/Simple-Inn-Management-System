@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);@charset "UTF-8";
+@charset "UTF-8";
 
 .error {
   color: red;
@@ -8,6 +8,10 @@
   display: inline;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .inline-important {
   display: inline !important;
   vertical-align: middle;
@@ -15,6 +19,10 @@
 
 .form-control.short-date-field {
   width: 200px;
+}
+
+.center-text {
+  text-align: center;
 }
 
 table.trial-balance tbody tr td {

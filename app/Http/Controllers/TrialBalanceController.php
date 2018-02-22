@@ -8,11 +8,13 @@ use Illuminate\Http\Request;
 
 class TrialBalanceController extends Controller
 {
-    public function index(){
+    public function index()
+    {
     	return view('trial-balance.index');
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
     	$validatedData = $request->validate([
     		'title' => 'required',
 	        'amount' => 'required',
@@ -24,38 +26,12 @@ class TrialBalanceController extends Controller
     	return back();
     }
 
-    /* Using API */
-    public function getTransactions(){
-    	if(!request()->date){
-    	    $dateChosen = Carbon::now()->format('Y-m-d');   
-    	}else {
-    	    $dateChosen = request()->date;
-    	}
-
-    	$transactions = TrialBalance::whereDate('created_at', '=', $dateChosen)->get();
-
-    	return response()->json(compact('transactions', 'dateChosen'));
-    }
-
-    public function addTransaction(Request $request){
-    	$validatedData = $request->validate([
-    		'title' => 'required',
-	        'entry' => 'required',
-	        'amount' => 'required'
-	    ]);
-
-    	$trialBalance = $this->storeTransaction($request);
-	    
-    	$success = true;
-
-    	return response()->json(compact('trialBalance', 'success'));
-    }
-
     /* Functions */
     /*
 		* return TrialBalanceController
     */
-    public function storeTransaction($request){
+    public function storeTransaction($request)
+    {
 
         $previousTrialBalance = TrialBalance::orderBy('created_at', 'desc')->first();
         if($previousTrialBalance){

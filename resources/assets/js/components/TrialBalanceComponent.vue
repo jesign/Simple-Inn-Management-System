@@ -1,7 +1,11 @@
 <script>
     import Resource from '../helpers/resource';
     import $ from 'jquery';
-    import trialBalance from '../modal/trialBalance.vue';
+    import addEditModal from '../modal/addEditTransaction.vue';
+    import viewTransactionModal from '../modal/viewTransaction.vue';
+    import Vue from 'vue';
+    import Modal from '../services/modal';
+    import AlertModal from '../modal/alert.vue';
 
     export default {
     	data(){
@@ -34,31 +38,92 @@
                 });     
             },
 
-            addTrialBalance(){
+            reCompute() {
                 let requirements = {
 
-                    url: `/api/trial-balance`,
+                    url: `/api/trial-balance/recompute`,
                     method: 'POST',
                     params: {
-                        title: this.add_title,
-                        amount: this.add_amount,
-                        entry: this.add_entry,
-                        description: this.add_description,
+                        date: this.date
                     }
 
                 };
                 Resource.send(requirements).then((response) => {
-                    if(response.success){
-                        this.getTrialBalance();
-                        $('#add-trial-balance').modal('hide')
+                    if (response.success) {
+                        this.openModal('Success', 'Refreshed Successfully')
+                    } else {
+                        this.openModal('Error!', 'Something went wrong, Try refreshing the page. If the problem persist please contact the tech guy.');
                     }
-                });     
+
+                    this.getTrialBalance();
+                });       
             },
-            openModal () {
-                let $mount = jQuery('<div>').appendTo('#app');
-                const Component = Vue.extend(trialBalance);
+
+            openAddEditModal (transaction) {
+                let modalContainer = $('<div>').appendTo('#app');    
+                transaction = transaction !== undefined ? transaction : {};
+                const Component = Vue.extend(addEditModal);
                 const vm = new Component({
-                }).$mount($mount[0]);
+                    data: {
+                        transaction: transaction
+                    }
+                }).$mount(modalContainer[0]);
+
+                vm.$on('reload', () => {
+                    this.getTrialBalance();
+                })
+            },
+
+            viewTransaction (transaction) {
+                let modalContainer = $('<div>').appendTo('#app');    
+                transaction = transaction !== undefined ? transaction : {};
+                const Component = Vue.extend(viewTransactionModal);
+                const vm = new Component({
+                    data: {
+                        transaction: transaction
+                    }
+                }).$mount(modalContainer[0]);
+            }, 
+
+            openModal (title, message) {
+                let config = {
+                    modal: AlertModal,
+                    data: {
+                        title: title, 
+                        body: message,
+                    }
+                }
+
+                Modal.openModal(config);
+            },
+
+            deleteTransaction (transaction){
+                let config = {
+                    modal: AlertModal,
+                    data: {
+                        title: 'Confirm', 
+                        body: 'Are you sure you want to delete this transaction?',
+                        hasConfirm: true
+                    }
+                }
+
+                Modal.openModal(config).then((response) => {
+                    if(response == 'ok'){
+                        let requirements = {
+                            url: `/api/trial-balance/` + transaction.id + '/delete',
+                            method: 'POST',
+                            params: {}
+                        };
+                        Resource.send(requirements).then((response) => {
+                            if (response.success) {
+                                this.getTrialBalance();
+                            } else {
+                                this.openModal('Error!', 'Something went wrong, Try refreshing the page. If the problem persist please contact the tech guy.');
+                            }
+                        });                             
+                    }
+                })
+
             }
         },
         mounted() {

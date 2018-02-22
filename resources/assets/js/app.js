@@ -5,9 +5,12 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
 
 window.Vue = require('vue');
+
+require('./bootstrap');
+
+import Modal from 'vue-strap/src/Modal.vue';
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -19,6 +22,7 @@ Vue.component('guests-component', require('./components/GuestsComponent.vue'));
 Vue.component('add-guest-component', require('./components/AddGuestComponent.vue'));
 Vue.component('guest-item-component', require('./components/GuestItemComponent.vue'));
 Vue.component('trial-balance-component', require('./components/TrialBalanceComponent.vue'));
+Vue.component('Modal', Modal);
 
 const app = new Vue({
     el: '#app'

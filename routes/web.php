@@ -23,11 +23,15 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::group(['prefix' => 'api'], function () {
-		Route::get('/guest', 'GuestController@getGuests');
-		Route::get('/trial-balance', 'TrialBalanceController@getTransactions');
-		Route::post('/trial-balance', 'TrialBalanceController@addTransaction');
+	Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+		Route::get('/guest', 'GuestController@guests');
+		Route::post('/guest/checkout/{id}', 'GuestController@checkout');
 
+		Route::get('/trial-balance', 'TrialBalanceController@transactions');
+		Route::post('/trial-balance', 'TrialBalanceController@addTransaction');
+		Route::post('/trial-balance/{id}/update', 'TrialBalanceController@updateTransaction');
+		Route::post('/trial-balance/{id}/delete', 'TrialBalanceController@deleteTransaction');
+		Route::post('/trial-balance/recompute', 'TrialBalanceController@reCompute');
 	});
 	/* Guests */
 	Route::group(['prefix' => 'guests'], function () {
@@ -76,4 +80,5 @@ Route::group(['middleware' => 'auth'], function () {
 	});
 
 	Route::get('/trial-balance', 'TrialBalanceController@index');
+	Route::get('/reports', 'ReportController@transactions');
 });
